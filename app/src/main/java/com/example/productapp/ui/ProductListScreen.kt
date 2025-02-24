@@ -1,5 +1,6 @@
 package com.example.productapp.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
@@ -26,35 +28,34 @@ import com.example.productapp.ui.model.Product
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductListScreen(navController: NavController) {
-    // Dữ liệu giả để hiển thị
     val products = listOf(
         Product(
-            1, "DANVOUY Women's T Shirt", "95% Cotton, 5% Spandex. Features: Casual, Short Sleeve, Letter Print V-Neck Fashion. The fabric is soft and has some stretch.",
-            12.99, R.drawable.tshirt_purple, 4.5f // Thay R.drawable.tshirt_purple bằng ID hình ảnh thực tế
+            1, "Màn hình AOC 24G4E 24\" IPS 180Hz", "Màn hình gaming siêu nhanh: tần số quét 180Hz, phản hồi 0.5ms, G-Sync Compatible. Hình ảnh sắc nét, mượt mà, sẵn sàng cho mọi trận chiến!",
+            2890000.0, R.drawable.aoc_24g4e, 4.5f
         ),
         Product(
-            2, "Opna Women's Short Sleeve", "100% Polyester, Machine Wash, 100% cationic polyester interlock. Machine Wash & Pre Shrunk for a Great Fit",
-            7.95, R.drawable.tshirt_red, 0.0f
+            2, "Màn hình LG 24GS65F-B 24\" IPS 180Hz HDR10 Gsync", "Màn hình gaming đỉnh cao: tần số quét 180Hz, phản hồi 1ms, hỗ trợ G-Sync và HDR10. Hình ảnh sống động, mượt mà, tối ưu cho mọi trận đấu!",
+            3350000.0, R.drawable.lg_24gs65f_b, 0.0f
         ),
         Product(
-            3, "MBJ Women's Solid Short", "95% RAYON 5% SPANDEX, Made in USA or Imported, Do Not Bleach, Lightweight fabric with great stretch for comfort",
-            9.85, R.drawable.tshirt_white, 0.0f
+            3, "Màn hình ViewSonic VX2758A-2K-PRO-3 27\"", "Màn hình gaming đỉnh cao: độ phân giải 2K QHD, tần số quét 240Hz, phản hồi 1ms. Công nghệ FreeSync Premium chống xé hình, HDR10 cho màu sắc sống động. Sẵn sàng cho trải nghiệm mượt mà, sắc nét!",
+            6890000.0, R.drawable.vx2758a_2k_pro, 4.9f
         ),
         Product(
-            4, "Rain Jacket Women", "Lightweight perfect for trip or casual wear----long sleeve with hooded, adjustable waist design. Button and zipper closure",
-            39.99, R.drawable.jacket_blue, 0.0f
+            4, "Màn hình Gaming Xiaomi G27QI 27\"", "Gaming đỉnh cao với 2K QHD, tần số quét 180Hz, phản hồi 1ms. FreeSync mượt mà, HDR10 rực rỡ – chiến game đã mắt, không giật lag!",
+            4490000.0, R.drawable.xiaomi_g27qi, 4.6f
         )
     )
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("New Arrivals", color = MaterialTheme.colorScheme.onPrimary) },
+                title = { Text("Sản phẩm mới", color = MaterialTheme.colorScheme.onPrimary) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                    containerColor = MaterialTheme.colorScheme.primary
                 ),
                 navigationIcon = {
-                    IconButton(onClick = { /* Xử lý nút back */ }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back"
@@ -77,19 +78,25 @@ fun ProductListScreen(navController: NavController) {
             ) {
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
-                    label = { Text("Home") },
+                    label = { Text("Trang chủ") },
                     selected = false,
-                    onClick = { /* Xử lý nút Home */ }
+                    onClick = { navController.navigate("home") }
                 )
                 NavigationBarItem(
                     icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Cart") },
-                    label = { Text("Cart") },
+                    label = { Text("Giỏ hàng") },
                     selected = false,
                     onClick = { /* Xử lý nút Cart */ }
                 )
                 NavigationBarItem(
+                    icon = { Icon(Icons.Default.Favorite, contentDescription = "Cart") },
+                    label = { Text("Yêu thích") },
+                    selected = false,
+                    onClick = {  }
+                )
+                NavigationBarItem(
                     icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
-                    label = { Text("Profile") },
+                    label = { Text("Trang cá nhân") },
                     selected = false,
                     onClick = { /* Xử lý nút Profile */ }
                 )
@@ -108,6 +115,7 @@ fun ProductListScreen(navController: NavController) {
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun ProductCard(product: Product, onClick: () -> Unit) {
     Card(
@@ -146,20 +154,44 @@ fun ProductCard(product: Product, onClick: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
+                val formattedPrice = String.format("%,.0f", product.price).replace(",", ".")
                 Text(
-                    text = "$${product.price}",
-                    style = MaterialTheme.typography.titleSmall,
+                    text = "${formattedPrice}đ",
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
-                IconButton(onClick = { /* Xử lý thêm vào giỏ hàng */ }) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add to Cart",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
+//                IconButton(onClick = {  }) {
+//                    Icon(
+//                        imageVector = Icons.Default.Add,
+//                        contentDescription = "Add to Cart",
+//                        tint = MaterialTheme.colorScheme.primary
+//                    )
+//                }
+                Button(
+                    onClick = {},
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.primary
+                    ),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Add to Cart",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            text = "THÊM VÀO GIỎ HÀNG",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
                 }
             }
-            // Hiển thị đánh giá sao (sử dụng Text thay vì component sao phức tạp)
+
             Text(
                 text = "★ ${product.rating}",
                 style = MaterialTheme.typography.bodySmall,

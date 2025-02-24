@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.productapp.ui.HomeScreen
 import com.example.productapp.ui.ProductDetailScreen
 import com.example.productapp.ui.ProductListScreen
 
@@ -30,16 +31,24 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "product_list") {
+    NavHost(navController = navController, startDestination = "home") {
+        composable("home") {
+            HomeScreen(navController)
+        }
         composable("product_list") {
             ProductListScreen(navController)
         }
         composable(
             "product_detail/{productId}",
             arguments = listOf(navArgument("productId") { type = NavType.IntType })
-        ) { backStackEntry ->
+        )
+        { backStackEntry ->
             val productId = backStackEntry.arguments?.getInt("productId") ?: 0
             ProductDetailScreen(productId, navController)
         }
     }
 }
+
+
+
+
